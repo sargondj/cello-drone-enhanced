@@ -36,7 +36,21 @@ Synthetic accuracy is not a real-world accuracy guarantee. Real bowed cello, mic
 - Not performed: visual browser QA, real microphone permission on mobile, recorded/live cello analysis, or device performance/latency testing. See TUNER-NOTES.md.
 
 ## Deployment
-No upload requested or attempted; original live app untouched.
+Stages 1–3 were deployed on 2026-09-18 to the authorized `sargondj/cello-drone-enhanced` repository only. GitHub Pages published successfully from `main` at https://sargondj.github.io/cello-drone-enhanced/.
+
+Deployment validation completed:
+- Package SHA-256 checksums matched before application.
+- JavaScript syntax passed for `app.js`, `scale.js`, `pitch.js`, and `tuner.js`.
+- `tests/guide.cjs`, `tests/pitch.cjs`, and `tests/tuner.cjs` passed with the results documented above.
+- Local browser QA confirmed drone, metronome, scale-guide start/stop, tuner permission-pending Cancel, and restored playback controls with no console errors.
+- A 390 × 844 responsive check showed no horizontal overflow; all four app regions fit the viewport width.
+- Live Pages QA confirmed HTML, CSS, `app.js`, `scale.js`, `pitch.js`, and `tuner.js` load from the enhanced repository subpath with no console errors.
+- On the live site, drone, metronome, and scale guide ran together; starting the tuner stopped all three and disabled their start controls while permission was pending; Cancel restored them.
+
+Remaining validation limitation: microphone Allow/Deny with a real input device, live or recorded cello accuracy, physical mobile-device behavior, latency, and actual microphone-track indicator release were not tested in this deployment session. Only the real browser request-pending and Cancel UI path was exercised. The synthetic and mocked tests remain the available accuracy and cleanup evidence; complete the physical-device checks in `TUNER-NOTES.md` before Stage 4.
+
+The protected original `sargondj/cello-drone` repository was read only for `favicon.png`, `SETUP.md`, and `.nojekyll`; it was not modified or deployed. Stage 4 was not started.
+
 This ZIP supersedes the Stages 1–2 and Stage 1 ZIPs. Apply to the enhanced repository only.
 BASELINE.json holds the earlier original-source blobs, not a current enhanced-repository HEAD.
 
