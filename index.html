@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#142d3b">
+<meta name="description" content="A steady root note for cello scales and intonation practice. Choose a pitch, press play, and take your time.">
+<title>Cello Drone · Practice companion</title>
+<link rel="icon" type="image/png" sizes="256x256" href="./favicon.png?v=2">
+<link rel="apple-touch-icon" href="./favicon.png?v=2">
+<link rel="stylesheet" href="./style.css"><script src="./app.js" defer></script><script src="./scale.js" defer></script><script src="./pitch.js" defer></script><script src="./tuner.js" defer></script>
+</head>
+<body>
+<main>
+<header><span class="wordmark">CELLO / DRONE</span><span class="edition">Practice companion</span></header>
+<section class="instrument" aria-label="Cello practice drone">
+<div class="display">
+<div class="display-top"><span>YOUR ROOT NOTE</span><span id="status" role="status">Ready</span></div>
+<div class="pitch" aria-label="Selected pitch"><span id="note-display">C</span><span id="octave-display">3</span></div>
+<div class="frequency"><span id="frequency">130.81</span> Hz <span class="divider">/</span> <span id="register">Middle register</span></div>
+<div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<button id="play" class="play" type="button"><span id="play-icon" aria-hidden="true">▶</span><span id="play-label">Play drone</span></button>
+<p class="display-hint" id="play-hint">A steady note, for as long as you need.</p>
+</div>
+<div class="controls">
+<fieldset class="notes-field"><legend><span class="step">01</span> Choose a root</legend><div id="notes" class="notes" aria-label="Root note"></div></fieldset>
+<fieldset><legend><span class="step">02</span> Set the register</legend><div class="segmented" id="octaves" aria-label="Octave"><button type="button" data-octave="2" aria-pressed="false">Low <small>C2–B2</small></button><button type="button" data-octave="3" aria-pressed="true">Middle <small>C3–B3</small></button><button type="button" data-octave="4" aria-pressed="false">High <small>C4–B4</small></button></div></fieldset>
+<div class="volume-label"><label for="volume"><span class="step">03</span> Volume</label><output id="volume-value" for="volume">30%</output></div><input id="volume" type="range" min="0" max="100" value="30" aria-label="Drone volume">
+<div class="details-row"><div><label for="tone">Tone</label><select id="tone"><option value="warm">Mellow · gentle harmonics</option><option value="pure">Pure · sine wave</option></select></div><div><label for="tuning">Tuning · A4 (Hz)</label><input type="number" id="tuning" min="400" max="480" step="0.1" value="440" inputmode="decimal"></div></div>
+<p id="error" class="error" role="alert"></p>
+</div>
+</section>
+<section class="metronome" aria-labelledby="metro-heading">
+<div class="metro-heading"><h2 id="metro-heading">Metronome</h2><span id="metro-status" role="status">Ready</span></div>
+<div class="metro-controls">
+<div><label for="tempo">Tempo · BPM</label><input id="tempo" type="number" min="30" max="240" step="1" value="80" inputmode="numeric"></div>
+<div><label for="meter">Beats per measure</label><select id="meter"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="12">12</option></select></div>
+<label class="accent-label"><input id="accent" type="checkbox" checked> Accent first beat</label>
+</div>
+<div class="metro-bottom"><div class="metro-volume"><label for="metro-volume">Click volume <output id="metro-volume-value" for="metro-volume">40%</output></label><input id="metro-volume" type="range" min="0" max="100" value="40"></div><button type="button" id="metro-play" class="metro-play">Start metronome</button></div>
+<div id="beat-lights" class="beat-lights" aria-hidden="true"></div>
+<p class="metro-hint">Use on its own or with the drone. Keep this tab visible for steady timing.</p>
+<p id="metro-error" class="error" role="alert"></p>
+</section>
+<section class="tuner" id="tuner" aria-labelledby="tuner-heading">
+<div class="metro-heading"><h2 id="tuner-heading">Open-string tuner</h2><span id="tuner-status" role="status">Microphone off</span></div>
+<fieldset><legend>Select an open string</legend><div class="tuner-strings" id="tuner-strings">
+<button type="button" data-string="36" aria-pressed="true">C<small>C2 · lowest</small></button>
+<button type="button" data-string="43" aria-pressed="false">G<small>G2</small></button>
+<button type="button" data-string="50" aria-pressed="false">D<small>D3</small></button>
+<button type="button" data-string="57" aria-pressed="false">A<small>A3 · highest</small></button>
+</div></fieldset>
+<div class="tuner-summary"><span>Target <strong id="tuner-target">C2 · 65.41 Hz</strong></span><span id="tuner-reference">A4 = 440 Hz</span></div>
+<div class="tuner-reading"><strong id="tuner-cents">—</strong><span id="tuner-detected">No reading</span></div>
+<div class="tuner-meter" id="tuner-meter" role="img" aria-label="No pitch reading">
+<div class="tuner-center" aria-hidden="true"></div><div id="tuner-needle" class="tuner-needle" hidden aria-hidden="true"></div>
+</div>
+<div class="tuner-labels" aria-hidden="true"><span>−50¢ · flat</span><span>In tune</span><span>+50¢ · sharp</span></div>
+<p id="tuner-feedback" class="tuner-feedback" role="status">Choose a string, then start the tuner.</p>
+<div class="tuner-actions"><button id="tuner-play" class="metro-play" type="button" aria-pressed="false">Start tuner</button><span>Uses the A4 tuning setting above. In tune: within ±5 cents.</span></div>
+<p class="metro-hint">Bow one open string steadily. Starting the tuner stops the drone, metronome, and scale guide. Audio stays on this device; it is not recorded or uploaded. Stop the tuner to use playback again.</p>
+<p id="tuner-error" class="error" role="alert"></p>
+</section>
+<section class="scale-guide" aria-labelledby="scale-heading">
+<div class="metro-heading"><h2 id="scale-heading">Major-scale guide</h2><span id="scale-status" role="status">Ready</span></div>
+<div class="scale-options">
+<div><label for="scale-key">Major key</label><select id="scale-key"></select></div>
+<div><label for="scale-start">Starting octave</label><select id="scale-start"><option value="2">2 · low</option><option value="3" selected>3 · middle</option><option value="4">4 · high</option></select></div>
+<div><label for="scale-octaves">Scale length</label><select id="scale-octaves"><option value="1">One octave</option><option value="2">Two octaves</option></select></div>
+<div><label for="scale-hold">Beats per note</label><select id="scale-hold"><option value="1">1 beat</option><option value="2" selected>2 beats</option><option value="4">4 beats</option></select></div>
+</div>
+<div class="scale-actions"><label class="accent-label"><input id="scale-drone" type="checkbox" checked> Play the root drone</label><button type="button" id="scale-play" class="metro-play">Start scale</button></div>
+<p class="metro-hint">Uses the tempo above, with one measure of count-in. Play up, then down. This guide does not listen or score your playing.</p>
+<div class="scale-current"><div><span class="current-label">PLAY</span><strong id="scale-current">—</strong></div><div><span class="current-label">NEXT</span><span id="scale-next">C3</span></div><span id="scale-beat">Ready for your count-in</span></div>
+<div id="scale-notes" class="scale-notes" aria-label="Scale notes in playing order"></div>
+<p id="scale-error" class="error" role="alert"></p>
+</section>
+<section class="practice-note"><span class="note-mark" aria-hidden="true">♮</span><p>Choose the root of your scale, press play, and let the note anchor each phrase. The same root works for major and minor scales.</p></section>
+<footer><span>Start with a comfortable volume. Keep this page open while practicing.</span><a href="./SETUP.md">App notes</a></footer>
+</main>
+</body>
+</html>
+
