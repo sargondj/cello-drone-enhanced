@@ -1,0 +1,47 @@
+/* Compact working views; keep controls readable rather than forcing a fixed height. */
+[hidden]{display:none!important}
+main{max-width:1020px;padding:14px 20px 20px}
+header{display:grid;grid-template-columns:1fr auto;gap:8px 20px;margin-bottom:12px;align-items:center}
+.wordmark{font-size:14px}.edition{display:none}
+.mode-tabs{display:flex;gap:4px;grid-row:2;grid-column:1/-1;background:#e2e9ed;border-radius:10px;padding:4px}
+.mode-tabs button{flex:1;min-height:40px;border:0;border-radius:7px;background:transparent;color:var(--ink);font-size:16px;font-weight:650}
+.mode-tabs button[aria-selected=true]{background:var(--ink);color:white}
+.global-reference{display:flex;gap:8px;align-items:center;grid-column:2;grid-row:1}
+.global-reference label{font-size:13px;color:var(--muted)}.global-reference input{width:76px;height:34px;border:1px solid var(--line);border-radius:6px;padding:5px;background:white;font-size:16px;color:var(--ink)}
+.instrument{border-radius:14px;grid-template-columns:.65fr 1.6fr;box-shadow:none}
+.display{padding:18px;justify-content:center}.display-top{font-size:12px;gap:8px}.display-top #status{padding:3px 8px}
+.pitch{min-height:0;padding:0}#note-display{font-size:70px}#octave-display{font-size:28px}
+.frequency{font-size:13px}.wave,.display-hint{display:none}.play{margin-top:14px;padding:12px;font-size:16px}
+.controls{padding:16px}fieldset{margin-bottom:14px}legend{font-size:14px;margin-bottom:8px}
+.notes{gap:6px}.notes button{min-height:44px;padding:6px 2px;font-size:18px}.notes button small{font-size:12px;margin-top:0}
+.segmented{padding:3px}.segmented button{padding:6px 3px;min-height:44px}.segmented button small{margin-top:1px}
+.volume-label{font-size:14px}input[type=range]{margin:4px 0 10px;height:26px}
+.details-row{grid-template-columns:1fr}.details-row>div{display:flex;align-items:center;gap:12px}.details-row label{margin:0}.details-row select{min-height:38px}
+.metronome,.tuner,.scale-guide{padding:16px;border-radius:14px;margin-top:12px}
+.mode-panel>.tuner,.mode-panel>.scale-guide{margin-top:0}
+.metro-heading{margin-bottom:12px}.metro-heading h2{font-size:18px}
+.metro-controls{gap:12px}.metro-controls label{margin-bottom:5px}.metro-controls input[type=number],.metro-controls select{min-height:38px;padding:6px;font-size:16px}
+.metro-bottom{margin-top:12px;gap:20px}.metro-play{padding:11px 18px;min-height:44px;font-size:15px}
+.beat-lights{margin-top:10px;gap:6px}.beat-lights span{width:23px;height:23px}
+.mode-help{margin-top:10px;font-size:13px;color:var(--muted)}.mode-help summary{cursor:pointer;padding:3px 0}.mode-help p{margin-top:6px}
+.tuner{max-width:760px;margin-left:auto;margin-right:auto}.tuner fieldset{margin-bottom:12px}.tuner-strings button{font-size:24px;padding:8px 3px}
+.tuner-reading{margin:18px 0 14px}.tuner-feedback{margin:16px 0}.tuner-actions{gap:16px}
+.scale-options{gap:12px}.scale-options label{margin-bottom:5px}.scale-options select{min-height:38px;padding:6px;font-size:15px}
+.scale-actions{margin-top:10px}.scale-current{padding:10px 16px;margin:12px 0;gap:24px}#scale-current{font-size:30px}#scale-next{font-size:22px}
+.scale-notes{grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}.scale-note{padding:6px 1px}.scale-note strong{font-size:16px}.scale-note small{display:none}
+.scale-drone-level{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-top:12px}.scale-drone-level input{flex:1;margin:0;max-width:240px}.scale-drone-level output{min-width:34px}
+@media(max-width:600px){
+ main{padding:10px 10px 16px}header{gap:6px 10px;margin-bottom:10px}.wordmark{font-size:12px;letter-spacing:.09em}
+ .instrument{grid-template-columns:1fr}.display{padding:10px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center}
+ .display-top{display:none}.pitch{justify-content:start;grid-column:1}#note-display{font-size:40px}#octave-display{font-size:22px}.frequency{grid-column:2;font-size:12px}.frequency #register,.frequency .divider{display:none}
+ .play{grid-column:3;margin:0;width:auto;padding:11px 12px;gap:6px}.controls{padding:12px}
+ fieldset{margin-bottom:10px}.notes{grid-template-columns:repeat(6,minmax(0,1fr))}.notes button{min-height:44px}.step{display:none}
+ .metronome,.tuner,.scale-guide{padding:12px}.metro-heading{margin-bottom:10px}
+ .metro-controls{grid-template-columns:1fr 1fr;gap:8px}.metro-controls .accent-label{grid-column:1/-1;min-height:28px;font-size:14px}
+ .metro-bottom{flex-direction:row;align-items:center;gap:14px;margin-top:8px}.metro-volume{min-width:0}.metro-play{min-width:0;width:auto;padding:11px 12px}.metro-volume label{font-size:13px}.metro-volume input[type=range]{height:26px}
+ .scale-options{grid-template-columns:1fr 1fr;gap:8px 12px}.scale-options label{font-size:13px}
+ .scale-actions{flex-direction:row;align-items:center;gap:12px}.scale-actions label{font-size:13px}.scale-current{gap:20px;flex-wrap:nowrap}#scale-beat{font-size:12px;margin-left:auto;max-width:125px}
+ .scale-notes{grid-template-columns:repeat(7,minmax(0,1fr))}.scale-note strong{font-size:14px}.scale-note{padding:7px 0}
+ .tuner-actions{flex-direction:column;align-items:stretch;gap:8px}.tuner-actions span{font-size:13px}.tuner-strings small{font-size:12px}
+}
+@media(max-width:350px){.display{grid-template-columns:auto 1fr}.frequency{display:none}.play{grid-column:2}.scale-notes{grid-template-columns:repeat(5,minmax(0,1fr))}.metro-bottom{flex-wrap:wrap}.metro-bottom .metro-play{width:100%}}

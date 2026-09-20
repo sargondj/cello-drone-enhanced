@@ -6,7 +6,7 @@
 <title>Cello Drone · Practice companion</title>
 <link rel="icon" type="image/png" sizes="256x256" href="./favicon.png?v=2">
 <link rel="apple-touch-icon" href="./favicon.png?v=2">
-<link rel="stylesheet" href="./style.css"><script src="./app.js" defer></script><script src="./scale.js" defer></script><script src="./pitch.js" defer></script><script src="./tuner.js" defer></script>
+<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./compact.css"><script src="./app.js" defer></script><script src="./scale.js" defer></script><script src="./pitch.js" defer></script><script src="./tuner.js" defer></script><script src="./navigation.js" defer></script>
 </head>
 <body>
 <main>
@@ -68,7 +68,7 @@
 <div><label for="scale-hold">Beats per note</label><select id="scale-hold"><option value="1">1 beat</option><option value="2" selected>2 beats</option><option value="4">4 beats</option></select></div>
 </div>
 <div class="scale-actions"><label class="accent-label"><input id="scale-drone" type="checkbox" checked> Play the root drone</label><button type="button" id="scale-play" class="metro-play">Start scale</button></div>
-<p class="metro-hint">Uses the tempo above, with one measure of count-in. Play up, then down. This guide does not listen or score your playing.</p>
+<p class="metro-hint">Uses the metronome tempo, with one measure of count-in. Play up, then down. This guide does not listen or score your playing.</p>
 <div class="scale-current"><div><span class="current-label">PLAY</span><strong id="scale-current">—</strong></div><div><span class="current-label">NEXT</span><span id="scale-next">C3</span></div><span id="scale-beat">Ready for your count-in</span></div>
 <div id="scale-notes" class="scale-notes" aria-label="Scale notes in playing order"></div>
 <p id="scale-error" class="error" role="alert"></p>
@@ -78,4 +78,3 @@
 </main>
 </body>
 </html>
-
