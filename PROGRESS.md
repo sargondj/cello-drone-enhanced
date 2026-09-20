@@ -55,7 +55,16 @@ This cumulative deployment contains Stages 1, 2, and 3 only. Stage 4 has not sta
 
 The original Stages 1–3 deployment was published successfully from `main` on 2026-09-18 at https://sargondj.github.io/cello-drone-enhanced/.
 
-The compact navigation replacement was published only to `sargondj/cello-drone-enhanced` on 2026-09-19. GitHub Pages and live asset/function checks are recorded below after the deployment completes.
+The compact navigation replacement was published only to `sargondj/cello-drone-enhanced` on 2026-09-19. GitHub Pages run #4 completed successfully for commit `205e934874ba5bace4c43e5b5abc2a8c3cd69f71`.
+
+Live deployment validation completed:
+
+- The public URL loaded the compact Practice, Tuner, and Scales tabs.
+- `style.css`, `compact.css`, `app.js`, `scale.js`, `pitch.js`, `tuner.js`, and `navigation.js` loaded from the enhanced repository Pages subpath.
+- Live browser logs contained no errors or warnings.
+- Drone and metronome started together; changing to Scales stopped both.
+- Drone volume synchronized from Practice to Scales and back.
+- Starting the tuner entered the real permission-pending state, disabled all playback transports, and exposed Cancel. Changing modes canceled the pending request, restored Microphone off, and re-enabled playback.
 
 The protected original `sargondj/cello-drone` repository was not modified or deployed for either enhanced release.
 
