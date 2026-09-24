@@ -162,7 +162,7 @@ async function startMetronome(){
     await ensureAudio();
     if(token!==metroRequest)return;
     if(document.visibilityState==='hidden')throw new Error('Keep this tab visible to start the metronome.');
-    metroGain=context.createGain();metroGain.gain.value=metroLevel();metroGain.connect(context.destination);
+    metroGain=context.createGain();metroGain.gain.value=typeof ScaleGuide!=='undefined'&&ScaleGuide.silent()?0:metroLevel();metroGain.connect(context.destination);
     metroPlaying=true;metroStarting=false;beatIndex=0;nextBeatTime=context.currentTime+.05;
     metroUi();scheduleBeats();metroTimer=setInterval(scheduleBeats,25);acquireWakeLock();
   }catch(e){
