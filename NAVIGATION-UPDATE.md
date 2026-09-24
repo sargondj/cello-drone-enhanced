@@ -1,3 +1,5 @@
+> Historical stage notes. COMPLETION-NOTES.md, PROGRESS.md and HANDOFF.md describe the current completed package and supersede earlier scope/stopping instructions.
+
 > Historical Stage 3 notes. For the current scope and deployment instructions, see STAGE-4-NOTES.md and HANDOFF.md.
 
 # Stage 3 compact navigation revision
