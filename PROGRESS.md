@@ -1,75 +1,108 @@
-# Cello Drone Enhanced — stopping point after Stage 4
+# Cello Drone Enhanced — stopping point after Stages 1–6
 
-Stage 4 package validated and prepared for the enhanced deployment on 2026-09-23.
+Stages 1–6 were validated for the enhanced deployment on 2026-09-24.
 
 AUTHORIZED TARGET: https://github.com/sargondj/cello-drone-enhanced  
 PROTECTED ORIGINAL: do not modify or deploy `sargondj/cello-drone`.
 
-This cumulative release contains Stages 1–4. It includes the compact tabbed interface, staff notation, major/natural-minor/classical-melodic-minor scales, fixed output levels, the standalone open-string tuner, and optional live scale intonation feedback. It does not record audio or calculate an automatic/session score.
+This cumulative release retains the compact tabbed interface, fixed 100% normal
+playback output, staff notation, scale guide, standalone tuner, and optional live
+intonation feedback. It adds a per-note review and the selected Stage 6 practice
+refinements. It does not record or upload audio, create accounts, or persist
+practice data.
 
-## Retained functionality
+## Implemented functionality
 
-- Practice tab: root-note drone and metronome.
-- Tuner tab: standalone C2, G2, D3, and A3 tuner using the shared A4 reference.
-- Scales tab: major, natural minor, and classical melodic minor; one/two octaves; one/two/four beats per note; count-in; optional root drone; paginated bass/treble staff notation.
-- Output remains fixed at the established gain levels. The user adjusts listening level with device controls.
-- Changing tabs stops audio, scale playback, tuner listening, and Stage 4 listening. Playback never resumes automatically.
+1. Practice: root-note drone and independent metronome.
+2. Scales: major, natural minor, harmonic minor, and classical melodic minor;
+   one or two octaves; count-in; one, two, or four beats per note; optional root
+   drone; paginated notation with repeated key signatures and local accidentals.
+3. Tuner: standalone C2, G2, D3, and A3 tuner using the shared A4 reference.
+4. Listening: optional live flat/sharp/in-tune feedback without recording,
+   uploading, saving, or routing microphone audio to the speakers.
+5. Review: a completed or partial run reports each note occurrence separately,
+   including median cents, the share of settled readings within ±10 cents,
+   sample count, and unscored/skipped/unreached states.
+6. Refinements: equal temperament or explicit root-relative pure intervals;
+   steady tempo or Wait for me; audible accompaniment with manual headphone
+   confirmation or silent accompaniment with visual beats; Skip note during
+   Wait for me.
 
-## Stage 4: optional live scale intonation
-
-- `Listen to my playing` leaves guide-only mode available without requesting microphone permission.
-- Listening requires the user to confirm that headphones are connected. The app cannot detect headphones itself.
-- The current scale note becomes the pitch target after the count-in. Target changes clear old smoothing before the next reading.
-- Reliable readings show cents flat/sharp; within ±10 cents is displayed as in tune.
-- Quiet, clipped, unstable, absent, wrong-octave, substantially wrong-note, or out-of-range input produces an uncertain/no-reading state rather than a score.
-- Audio is analyzed locally and is never recorded, uploaded, saved, or connected to speaker output.
-- Stop, completion, tab change, tuner start, page hiding/exit, microphone mute/disconnect, interruption, cancellation, denial, and late permission all clean up listening resources.
-- `intonation.js`, `STAGE-4-NOTES.md`, and `tests/intonation.cjs` were added.
+Reports summarize accepted steady readings, not the whole performance or rhythm.
+They are replaced by the next listening run and lost on reload. The detector
+does not perform beat-onset detection, latency calibration, recording, cloud
+storage, or automatic early/late grading.
 
 ## Automated validation completed
 
-- Every supplied file matched `SHA256SUMS.txt` before testing and again after the temporary enlarged-text QA override was removed.
-- `node --check` passed for `app.js`, `navigation.js`, `notation.js`, `pitch.js`, `scale.js`, `tuner.js`, and `intonation.js`.
-- `tests/guide.cjs` passed 216 scale configurations, interval patterns, notation paging/highlighting, spelling, count-in, synchronized advancement, completion, cancellation, and lost-timing checks.
-- `tests/pitch.cjs` passed 1,008 synthetic tone cases with a maximum error of 0.38 cents, plus silence, DC, noise, clipping, weak-signal, octave-preservation, and smoothing checks.
-- `tests/tuner.cjs` passed permission, feedback, calibration, transport exclusion, no-monitoring, denial/cancellation/late permission, interruption, lifecycle, and cleanup checks.
-- `tests/navigation.cjs` passed exclusive-panel, shared-metronome, reference, cleanup, tab-semantics, keyboard-navigation, and visible-mode Space checks.
-- `tests/intonation.cjs` passed headphone gating, opt-out, flat/sharp/in-tune and uncertainty states, target transitions, octave/range rejection, no monitoring, count-in/target/completion behavior, denial/cancellation/late permission, mute/disconnect, audio interruption, tab hiding, tuner exclusion, and page-exit cleanup.
+- Every supplied file matched `SHA256SUMS.txt`. The check was repeated after
+  removing the temporary enlarged-text browser-QA override.
+- `node --check` passed for `app.js`, `navigation.js`, `notation.js`,
+  `pitch.js`, `scale.js`, `tuner.js`, `intonation.js`,
+  `scale-tuning.js`, and `review.js`.
+- `tests/guide.cjs` passed 288 scale configurations, interval patterns,
+  notation paging/highlighting, spelling, signature/accidental reconstruction,
+  timing, completion, cancellation, and lost-timing checks.
+- `tests/pitch.cjs` passed 1,008 synthetic tone cases with a maximum error of
+  0.38 cents, plus silence, DC, noise, clipping, weak-signal, octave-preservation,
+  and smoothing checks.
+- `tests/tuner.cjs` passed microphone permission, feedback, calibration,
+  transport exclusion, no-monitoring, interruption, lifecycle, and cleanup.
+- `tests/navigation.cjs` passed exclusive panels, shared metronome relocation,
+  reference access, cleanup, tab semantics, keyboard navigation, and shortcuts.
+- `tests/intonation.cjs` passed headphone gating, guide-only mode, live
+  feedback/uncertainty, target transitions, range rejection, no monitoring,
+  lifecycle, permission, interruption, cancellation, and cleanup.
+- `tests/refinements.cjs` passed pure-ratio references, report statistics and
+  unscored rules, silent output, wait/pause/follow/skip behavior, partial and
+  complete reports, fixed calibration, no-sound/no-score behavior, the listening
+  gate, and stream cleanup.
+- A static scan found no network upload, recording, persistent browser storage,
+  or analytics path in the application source.
 
 ## Browser validation completed
 
-- Local responsive checks passed at 390 × 844, 375 × 667, and 1440 × 900 with no horizontal overflow.
-- Practice, Tuner, and Scales each kept visible controls within the viewport.
-- A temporary 125% root-font override was used across all three modes at 375 × 667; controls remained within the viewport. The override was removed before publication.
-- Two-octave melodic minor rendered five notation pages with bass/treble clef changes and classical ascending/descending spelling. Natural minor notation was also rendered at laptop size.
-- The script order was verified as `app.js`, `notation.js`, `scale.js`, `pitch.js`, `tuner.js`, `intonation.js`, `navigation.js`.
-- Guide-only mode started without a microphone prompt.
-- Listening without headphone confirmation was blocked with the expected instruction.
-- Confirmed listening entered the browser permission-pending state; changing tabs canceled it and restored Microphone off.
+- Practice, Tuner, and Scales were checked at 390 × 844 and 1440 × 900. Scales
+  was also checked at 375 × 667 with a temporary 125% root-font override.
+  No horizontal overflow or out-of-viewport controls were found.
+- Stage 5–6 controls, the closed/open Practice options panel, and the report
+  container rendered in the responsive interface.
+- Two-octave F♯ harmonic minor exposed the expected three-sharp key signature
+  and F♯/G♯/E♯ spelling in the notation summary.
+- Guide-only playback entered count-in without microphone activation and stopped
+  cleanly.
+- Audible listening without confirmation was blocked with the expected
+  headphone-or-Silent instruction.
+- Silent listening bypassed the headphone requirement, entered listening startup,
+  exposed Cancel, and returned to Microphone off after cancellation.
+- All nine scripts loaded in the required order:
+  `app.js`, `scale-tuning.js`, `review.js`, `notation.js`, `scale.js`,
+  `pitch.js`, `tuner.js`, `intonation.js`, and `navigation.js`.
 - No browser console errors or warnings were observed.
 
 ## Deployment
 
-The prior compact Stage 3 deployment was live from commit `bc415c1d46a65b8d944c04e89b25e5a8ff5936e8` at https://sargondj.github.io/cello-drone-enhanced/ before this Stage 4 update.
+The previous Stage 4 deployment was live from application/test commit
+`d92db3a12e6fd4a308cdab63f538415f298f819c`, followed by documentation commit
+`d96f3b5f389c0684e666b44b40b23ec2ca5e8d3f`.
 
-Stage 4 was published only to `sargondj/cello-drone-enhanced` on 2026-09-23. GitHub Pages completed successfully for application/test commit `d92db3a12e6fd4a308cdab63f538415f298f819c`.
+The Stages 1–6 deployment result will be recorded here after GitHub Pages
+success and public-site verification.
 
-Live deployment validation completed:
-
-- The public URL loaded the Practice, Tuner, and Scales tabs with no browser console errors or warnings.
-- `style.css`, `compact.css`, `app.js`, `notation.js`, `scale.js`, `pitch.js`, `tuner.js`, `intonation.js`, and `navigation.js` loaded from the enhanced Pages subpath in the required order.
-- Two-octave melodic minor rendered five notation pages and exposed the Stage 4 listening controls.
-- Guide-only mode started without entering a microphone permission state.
-- Listening without headphone confirmation was blocked with the expected instruction.
-- Confirmed listening entered the real browser permission-pending state and exposed Cancel.
-- Changing to Practice canceled the pending request, restored Microphone off, and returned the scale button to Start scale.
-
-The protected original `sargondj/cello-drone` repository has not been modified or deployed.
+The protected original `sargondj/cello-drone` repository has not been modified
+or deployed.
 
 ## Remaining validation limitations
 
-Real microphone Allow/Deny with a physical input device, live or recorded cello accuracy, actual headphone routing, physical iPhone/Android behavior, device latency, and the operating-system microphone indicator were not tested in this deployment session. Automated synthetic/mocked results and the browser permission-pending path do not establish real-world accuracy. Complete the device acceptance checks in `STAGE-4-NOTES.md` before building any scoring or later-stage features.
+Real microphone Allow/Deny with a physical input device, live or recorded cello
+accuracy, actual headphone routing, physical iPhone/Android behavior, wireless
+latency, and the operating-system microphone indicator were not tested in this
+session. The real browser listening flow reached startup/cancellation, but the
+full Wait for me and per-note report paths were validated with synthetic audio
+and mocks rather than a physical cello. Complete the device acceptance checks in
+`COMPLETION-NOTES.md`.
 
 ## Stopping point
 
-Stop at Stage 4. Do not add recordings, automatic scores, or a later stage without a new user request.
+Stop after the selected Stage 6 refinements. Do not add recordings, uploads,
+accounts, cloud storage, or further features without a new user request.
