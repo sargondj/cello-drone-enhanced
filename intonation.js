@@ -1,8 +1,8 @@
 'use strict';
-// Stage 4: live feedback only. No recording, upload, or aggregate score.
+// Local microphone analysis; only derived measurements go to the practice report.
 const ScaleIntonation=(()=>{
   let request=0,pending=false,listening=false,stream=null,source=null,analyser=null,buffer=null,timer=null;
-  let target=null,readyAt=0;
+  let target=null,readyAt=0,steadySince=null,canAdvance=false,root=48,reference='equal';
   const smoother=CelloPitch.createSmoother();
   function display(state,message,cents=null){
     $('scale-listening').dataset.state=state;
@@ -14,7 +14,7 @@ const ScaleIntonation=(()=>{
     $('intonation-meter').setAttribute('aria-label',cents===null?message:`${Math.round(cents)} cents. ${message}`);
     $('scale-listening').dataset.inTune=String(cents!==null&&Math.abs(cents)<=10);
   }
-  function clear(message,state='uncertain'){smoother.reset();display(state,message);}
+  function clear(message,state='uncertain'){smoother.reset();steadySince=null;canAdvance=false;display(state,message);}
   function stopListening(message='Microphone off.'){
     request++;pending=false;listening=false;target=null;
     clearTimeout(timer);timer=null;
@@ -32,7 +32,7 @@ const ScaleIntonation=(()=>{
       else if(!target)clear('Listen to the count-in.');
       else if(context.currentTime<readyAt)clear('Settling on the new note…');
       else{
-        const expected=CelloPitch.frequency(target.midi,tuning);
+        const expected=typeof ScaleTuning==='undefined'?CelloPitch.frequency(target.midi,tuning):ScaleTuning.frequency(target.midi,root,tuning,reference);
         if(expected<45||expected>1100)clear('This note is outside the listening range. Follow the notation.');
         else{
           analyser.getFloatTimeDomainData(buffer);
@@ -46,8 +46,13 @@ const ScaleIntonation=(()=>{
               clear(`Different note or octave: heard ${CelloPitch.noteName(result.hz,tuning)}; expected ${target.name}.`);
             }else{
               const stable=smoother.push(deviation);
-              if(stable===null)display('uncertain','Keep the pitch steady…');
-              else display('reliable',Math.abs(stable)<=10?'In tune':stable<0?'Flat — raise the pitch slightly':'Sharp — lower the pitch slightly',stable);
+              if(stable===null){canAdvance=false;steadySince=null;display('uncertain','Keep the pitch steady…');}
+              else{
+                display('reliable',Math.abs(stable)<=10?'In tune':stable<0?'Flat — raise the pitch slightly':'Sharp — lower the pitch slightly',stable);
+                if(typeof PracticeReview!=='undefined')PracticeReview.add(deviation,context.currentTime);
+                if(Math.abs(stable)<=50){if(steadySince===null)steadySince=context.currentTime;canAdvance=context.currentTime-steadySince>=.24;}
+                else{steadySince=null;canAdvance=false;}
+              }
             }
           }
         }
@@ -58,7 +63,9 @@ const ScaleIntonation=(()=>{
   async function prepare(){
     stopListening();
     if(!$('scale-listen').checked)return;
-    if(!$('scale-headphones').checked)throw new Error('Connect headphones and confirm below before listening.');
+    if($('scale-output').value!=='silent'&&!$('scale-headphones').checked)throw new Error('Connect headphones and confirm below, or select Silent accompaniment.');
+    root=(Number($('scale-start').value)+1)*12+Number($('scale-key').value);
+    reference=$('scale-reference').value;
     if(!window.isSecureContext||!navigator.mediaDevices?.getUserMedia)throw new Error('Listening needs HTTPS (or localhost) and microphone support.');
     const token=++request;pending=true;clear('Allow microphone access.');
     // Both operations begin in the Start scale gesture; attach audio errors immediately.
@@ -103,5 +110,5 @@ const ScaleIntonation=(()=>{
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&(pending||listening))fail('Tab hidden — listening stopped.');});
   window.addEventListener('pagehide',()=>{if(pending||listening)fail('Listening stopped.');});
   options();
-  return {prepare,stop:stopListening,setTarget,active:()=>pending||listening};
+  return {prepare,stop:stopListening,setTarget,ready:()=>listening&&canAdvance,active:()=>pending||listening};
 })();
