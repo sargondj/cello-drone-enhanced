@@ -37,7 +37,7 @@ class AudioContext{
  createMediaStreamSource(s){return Object.assign(node(),{micStream:s});}
  createAnalyser(){return Object.assign(node(),{fftSize:2048,getFloatTimeDomainData(data){for(let i=0;i<data.length;i++)data[i]=quiet?0:.15*Math.sin(2*Math.PI*hz*i/48000);}});}
 }
-const doc=Object.assign(new EventTarget(),{getElementById:get,createElement:()=>new Element(),visibilityState:'visible',body:new Element(),activeElement:new Element(),querySelectorAll:selector=>selector==='[data-string]'?strings:[]});
+const doc=Object.assign(new EventTarget(),{getElementById:get,createElement:()=>new Element(),createElementNS:()=>new Element(),visibilityState:'visible',body:new Element(),activeElement:new Element(),querySelectorAll:selector=>selector==='[data-string]'?strings:[]});
 const win=Object.assign(new EventTarget(),{AudioContext,isSecureContext:true});
 const box={window:win,document:doc,navigator:{mediaDevices:{getUserMedia:async constraints=>{
  microphoneCalls++;lastConstraints=constraints;
@@ -46,7 +46,7 @@ const box={window:win,document:doc,navigator:{mediaDevices:{getUserMedia:async c
  return makeStream();
 }}},setTimeout:(fn,ms=0)=>{const id=++serial;timers.set(id,{fn,at:clock+ms});return id;},clearTimeout:id=>timers.delete(id),setInterval:fn=>{intervals.set(++serial,fn);return serial;},clearInterval:id=>intervals.delete(id)};
 vm.createContext(box);const run=code=>vm.runInContext(code,box);
-for(const file of ['app.js','scale.js','pitch.js','tuner.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../',file),'utf8'),box);
+for(const file of ['app.js','notation.js','scale.js','pitch.js','tuner.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'../',file),'utf8'),box);
 const tick=()=>new Promise(setImmediate);
 async function advance(ms){
  const end=clock+ms;

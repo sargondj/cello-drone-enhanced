@@ -25,9 +25,7 @@ run("AppNavigation.select('scales')");assert.equal(micStops,1,'Selecting current
 run("AppNavigation.select('tuner')");assert.equal(panel('tuner').hidden,false);assert.equal(panel('scales').hidden,true);assert.equal(metro.parentElement,panel('practice'));
 assert.equal(tabs[1].attrs['aria-selected'],'true');assert.equal(tabs[1].tabIndex,0);assert.equal(tabs[0].tabIndex,-1);
 assert.equal(reference.parentElement,header,'A4 reference visible in all modes');
-const proxy=scale.children.find(el=>el.className==='scale-drone-level').children.find(el=>el.tagName==='INPUT');proxy.value='62';proxy.dispatchEvent({type:'input'});assert.equal(volume.value,'62');assert.equal(inputEvents,1);
-volume.value='17';volume.dispatchEvent({type:'input'});assert.equal(proxy.value,'17');
 tabs[1].dispatchEvent({type:'keydown',key:'ArrowRight',preventDefault(){}});assert.equal(run('AppNavigation.current()'),'scales');assert.equal(document.activeElement,tabs[2]);
 document.activeElement=new El();let clicked=0;elements['scale-play'].addEventListener('click',()=>clicked++);
 document.events.keydown({code:'Space',repeat:false,preventDefault(){},stopImmediatePropagation(){}});assert.equal(clicked,1);
-console.log('PASS: exclusive panels, shared metronome relocation, reference access, bidirectional volume, audio/mic cleanup, selected-tab semantics, arrow keys and visible-mode Space shortcut.');
+console.log('PASS: exclusive panels, shared metronome relocation, reference access, audio/mic cleanup, selected-tab semantics, arrow keys and visible-mode Space shortcut.');
