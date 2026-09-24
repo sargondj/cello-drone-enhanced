@@ -78,6 +78,11 @@ storage, or automatic early/late grading.
 - All nine scripts loaded in the required order:
   `app.js`, `scale-tuning.js`, `review.js`, `notation.js`, `scale.js`,
   `pitch.js`, `tuner.js`, `intonation.js`, and `navigation.js`.
+- The first public check exposed a mixed-cache load: the new HTML was paired
+  with older unversioned Stage 4 JavaScript. `index.html` was corrected to use
+  one Stage 6 version token on every stylesheet and script URL. The final public
+  check loaded the complete versioned set and rendered F♯ harmonic minor with
+  the expected three-sharp signature and E♯ raised seventh.
 - No browser console errors or warnings were observed.
 
 ## Deployment
@@ -86,8 +91,19 @@ The previous Stage 4 deployment was live from application/test commit
 `d92db3a12e6fd4a308cdab63f538415f298f819c`, followed by documentation commit
 `d96f3b5f389c0684e666b44b40b23ec2ca5e8d3f`.
 
-The Stages 1–6 deployment result will be recorded here after GitHub Pages
-success and public-site verification.
+Stages 1–6 were published only to `sargondj/cello-drone-enhanced` on
+2026-09-24. The cumulative application/test upload completed at commit
+`fe42d6561d45f14335e12619fc5545fdce5f66b4`. The cache-safe asset-reference
+fix completed at commit `5b84d9f4f5c2139a892539bcceaa343cebea7dfb`.
+GitHub Pages run `35999411918` completed successfully for that final commit.
+
+Final public validation at https://sargondj.github.io/cello-drone-enhanced/
+confirmed the three tabs, harmonic minor, the Stage 5 review container, all
+three Stage 6 option groups, versioned CSS and all nine versioned scripts, a
+390-pixel layout without horizontal overflow, guide-only count-in without
+microphone activation, and the audible-listening headphone gate. F♯ harmonic
+minor displayed the expected three-sharp signature and E♯ raised seventh. No
+browser console errors or warnings were observed.
 
 The protected original `sargondj/cello-drone` repository has not been modified
 or deployed.
