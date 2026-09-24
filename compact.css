@@ -45,3 +45,25 @@ header{display:grid;grid-template-columns:1fr auto;gap:8px 20px;margin-bottom:12
  .tuner-actions{flex-direction:column;align-items:stretch;gap:8px}.tuner-actions span{font-size:13px}.tuner-strings small{font-size:12px}
 }
 @media(max-width:350px){.display{grid-template-columns:auto 1fr}.frequency{display:none}.play{grid-column:2}.scale-notes{grid-template-columns:repeat(5,minmax(0,1fr))}.metro-bottom{flex-wrap:wrap}.metro-bottom .metro-play{width:100%}}
+
+/* Staff notation replaces the note tiles. */
+.device-volume{display:block;font-size:10px;font-weight:400;letter-spacing:0;margin-top:3px;color:var(--muted)}
+.scale-notes{display:block;background:#fff;border-radius:8px;padding:0 4px}
+.scale-notes svg{display:block;width:100%;max-width:650px;margin:auto;height:auto}
+.score-navigation{display:flex;align-items:center;justify-content:center;gap:14px;font-size:12px;color:var(--muted)}
+.score-navigation button{min-width:44px;min-height:40px;border:1px solid var(--line);background:white;border-radius:6px;color:var(--ink);font-size:20px}
+.score-navigation button:disabled{opacity:.35}
+.scale-options{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:600px){.scale-options{grid-template-columns:repeat(2,minmax(0,1fr))}.scale-options>div:first-child{grid-column:1/-1}.scale-current{padding:8px;gap:12px}}
+
+/* Optional live feedback remains compact and lives only in Scales. */
+.scale-listen-option{margin-top:10px;font-size:14px}
+.scale-listening{padding:10px 12px;margin-top:8px;background:#edf2f4;border-radius:8px}
+.scale-listening>.accent-label{font-size:13px}
+.intonation-reading{display:flex;align-items:center;gap:12px;margin:6px 0}
+#intonation-cents{font-size:25px;min-width:75px}
+#intonation-status{font-size:12px;color:var(--muted)}
+.scale-listening .tuner-meter{height:16px}
+#intonation-feedback{margin:6px 0 0;font-size:13px;min-height:18px}
+.scale-listening[data-in-tune=true]{background:#e0f1e7}
+.scale-listening[data-state=uncertain] #intonation-status{color:#785923}

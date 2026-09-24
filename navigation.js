@@ -26,12 +26,6 @@ const AppNavigation=(()=>{
   const reference=$('tuning').parentElement;reference.classList.add('global-reference');
   reference.querySelector('label').textContent='A4 · Hz';header.append(reference);
   panels.practice.append(instrument,metro);panels.tuner.append(tuner);panels.scales.append(scale);
-  const level=document.createElement('label');level.className='scale-drone-level';level.textContent='Drone volume ';
-  const range=document.createElement('input');range.type='range';range.min='0';range.max='100';range.value=$('volume').value;range.setAttribute('aria-label','Scale drone volume');
-  const output=document.createElement('output');output.textContent=range.value+'%';
-  range.addEventListener('input',()=>{$('volume').value=range.value;$('volume').dispatchEvent(new Event('input'));});
-  $('volume').addEventListener('input',()=>{range.value=$('volume').value;output.textContent=range.value+'%';});
-  level.append(output,range);scale.querySelector('.scale-actions').before(level);
   // Keep help available without consuming the initial viewport.
   for(const section of [metro,tuner,scale]){
     const hint=section.querySelector('.metro-hint');

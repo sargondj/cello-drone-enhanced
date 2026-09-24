@@ -5,22 +5,25 @@ const ScaleGuide=(()=>{
     ['C',0],['D♭',1],['D',2],['E♭',3],['E',4],['F',5],
     ['F♯',6],['G',7],['A♭',8],['A',9],['B♭',10],['B',11]
   ];
-  const letters=['C','D','E','F','G','A','B'],natural=[0,2,4,5,7,9,11],steps=[0,2,4,5,7,9,11];
+  const letters=['C','D','E','F','G','A','B'],natural=[0,2,4,5,7,9,11];
+  const patterns={major:[0,2,4,5,7,9,11],natural:[0,2,3,5,7,8,10],melodic:[0,2,3,5,7,9,11]};
   let running=false,pending=false,token=0,events=0,countIn=4,hold=2,sequence=[],ownedDrone=false,finishing=false;
   const timers=new Set();
-  const lockIds=['scale-key','scale-start','scale-octaves','scale-hold','scale-drone','tempo','meter','metro-play'];
-  function makeScale(keyIndex,startOctave,length){
+  const lockIds=['scale-key','scale-type','scale-start','scale-octaves','scale-hold','scale-drone','scale-listen','scale-headphones','tempo','meter','metro-play'];
+  const intonation=()=>typeof ScaleIntonation==='undefined'?null:ScaleIntonation;
+  function makeScale(keyIndex,startOctave,length,type='major'){
     const [key,pc]=keys[keyIndex],firstLetter=letters.indexOf(key[0]),base=(startOctave+1)*12+pc;
-    const up=[];
-    for(let degree=0;degree<=length*7;degree++){
+    function makeNote(degree,steps){
       const midi=base+12*Math.floor(degree/7)+steps[degree%7];
       const letterIndex=(firstLetter+degree)%7;
       const writtenOctave=startOctave+Math.floor((firstLetter+degree)/7);
       const accidental=midi-((writtenOctave+1)*12+natural[letterIndex]);
-      const name=letters[letterIndex]+({[-1]:'♭',0:'',1:'♯'})[accidental]+writtenOctave;
-      up.push({midi,name});
+      const name=letters[letterIndex]+({[-2]:'♭♭',[-1]:'♭',0:'',1:'♯',2:'♯♯'})[accidental]+writtenOctave;
+      return {midi,name,letterIndex,writtenOctave,accidental};
     }
-    return up.concat(up.slice(0,-1).reverse());
+    const up=Array.from({length:length*7+1},(_,degree)=>makeNote(degree,patterns[type]||patterns.major));
+    const down=Array.from({length:length*7},(_,i)=>makeNote(length*7-1-i,type==='melodic'?patterns.natural:(patterns[type]||patterns.major)));
+    return up.concat(down);
   }
   function lock(value){
     lockIds.forEach(id=>$(id).disabled=value);
@@ -32,26 +35,17 @@ const ScaleGuide=(()=>{
     $('scale-play').setAttribute('aria-pressed',running);
   }
   function preview(){
-    sequence=makeScale(Number($('scale-key').value),Number($('scale-start').value),Number($('scale-octaves').value));
-    $('scale-notes').replaceChildren();
-    sequence.forEach((n,i)=>{
-      const el=document.createElement('div');el.className='scale-note';
-      const name=document.createElement('strong');name.textContent=n.name;
-      const order=document.createElement('small');order.textContent=i+1;
-      el.append(name);el.append(order);$('scale-notes').append(el);
-    });
+    sequence=makeScale(Number($('scale-key').value),Number($('scale-start').value),Number($('scale-octaves').value),$('scale-type').value||'major');
+    ScaleNotation.setNotes(sequence,Number($('scale-hold').value));
     $('scale-current').textContent='—';$('scale-next').textContent=sequence[0].name;
     $('scale-beat').textContent='Ready for your count-in';$('scale-status').textContent='Ready';
   }
   function mark(index){
-    Array.from($('scale-notes').children).forEach((el,i)=>{
-      el.classList.toggle('current',i===index);
-      el.classList.toggle('done',i<index);
-      if(i===index)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');
-    });
+    ScaleNotation.mark(index);
   }
   function clearState(message){
     token++;running=false;pending=false;finishing=false;
+    intonation()?.stop(message==='Scale complete'?'Scale complete — microphone off.':'Microphone off.');
     timers.forEach(clearTimeout);timers.clear();
     if(ownedDrone){ownedDrone=false;stop();}
     lock(false);button();mark(-1);
@@ -95,6 +89,7 @@ const ScaleGuide=(()=>{
         $('scale-beat').textContent='Count '+(event+1)+' of '+countIn;
       }else{
         const offset=event-countIn,index=Math.floor(offset/hold),beat=offset%hold;
+        if(beat===0)intonation()?.setTarget(sequence[index]);
         const halfway=(sequence.length-1)/2;
         $('scale-status').textContent=index<halfway?'Ascending':index===halfway?'Top note':'Descending';
         $('scale-current').textContent=sequence[index].name;
@@ -113,6 +108,8 @@ const ScaleGuide=(()=>{
     preview();events=0;countIn=beatsPerMeasure;hold=Number($('scale-hold').value);
     const currentToken=++token;pending=true;lock(true);button();$('scale-error').textContent='';
     try{
+      if(intonation())await intonation().prepare();
+      if(currentToken!==token)return;
       await ensureAudio();
       if(currentToken!==token)return;
       if(document.visibilityState==='hidden')throw new Error('Keep this tab visible to practice.');
@@ -133,10 +130,10 @@ const ScaleGuide=(()=>{
     }
   }
   keys.forEach(([name],i)=>{
-    const option=document.createElement('option');option.value=i;option.textContent=name+' major';$('scale-key').append(option);
+    const option=document.createElement('option');option.value=i;option.textContent=name;$('scale-key').append(option);
   });
   $('scale-key').value='0';
-  ['scale-key','scale-start','scale-octaves','scale-hold'].forEach(id=>$(id).addEventListener('change',preview));
+  ['scale-key','scale-type','scale-start','scale-octaves','scale-hold'].forEach(id=>$(id).addEventListener('change',preview));
   $('scale-play').addEventListener('click',startGuide);
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='hidden'&&(running||pending))cancel('Tab hidden — start again for a count-in');

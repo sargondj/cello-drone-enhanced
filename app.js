@@ -21,7 +21,7 @@ pitches.forEach(([name,alias],i)=>{
 });
 $('octaves').addEventListener('click',e=>{const b=e.target.closest('[data-octave]');if(b){octave=Number(b.dataset.octave);renderPitch();}});
 function updateTone(){if(!context)return;const weights=$('tone').value==='warm'?[1,.25,.1]:[1,0,0];voices.forEach((v,i)=>v.gain.gain.setTargetAtTime(weights[i]/1.35,context.currentTime,.025));}
-function level(){return (Number($('volume').value)/100)**1.5*.42;}
+function level(){return .42;}
 function ui(){
   document.body.classList.toggle('playing',playing);
   $('play-label').textContent=starting?'Cancel':playing?'Stop drone':'Play drone';
@@ -60,7 +60,6 @@ async function start(){
   }catch(e){if(thisRequest!==requestId)return;stop();$('error').textContent=e.message||'Could not start audio. Tap Play to try again.';}
 }
 $('play').addEventListener('click',()=>{if(playing||starting)stop();else start();});
-$('volume').addEventListener('input',()=>{$('volume-value').textContent=$('volume').value+'%';if(master)master.gain.setTargetAtTime(level(),context.currentTime,.025);});
 $('tone').addEventListener('change',updateTone);
 $('tuning').addEventListener('change',()=>{const value=Number($('tuning').value);if(!Number.isFinite(value)||value<400||value>480){$('tuning').value=tuning;$('error').textContent='Choose an A4 tuning between 400 and 480 Hz.';return;}tuning=value;$('error').textContent='';renderPitch();});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')acquireWakeLock();});
@@ -83,6 +82,7 @@ async function ensureAudio(){
     context=new AudioContext();
     context.onstatechange=()=>{
       if(context.state!=='running'){
+        if(typeof ScaleIntonation!=='undefined'&&ScaleIntonation.active())ScaleGuide.cancel('Audio interrupted — start the scale again.');
         if(tunerIsActive())CelloTuner.stop('Audio interrupted — tap Start tuner again.');
         if(playing){stop();$('status').textContent='Paused';$('play-hint').textContent='Audio was interrupted. Tap Play to resume.';}
         if(metroPlaying){stopMetronome();$('metro-status').textContent='Paused — tap Start to resume';}
@@ -92,7 +92,7 @@ async function ensureAudio(){
   await context.resume();
   if(context.state!=='running')throw new Error('Audio is paused by your device. Tap Start to try again.');
 }
-function metroLevel(){return (Number($('metro-volume').value)/100)**1.5*.35;}
+function metroLevel(){return .35;}
 function drawBeats(){
   $('beat-lights').replaceChildren();
   for(let i=0;i<beatsPerMeasure;i++){
@@ -184,10 +184,6 @@ $('meter').addEventListener('change',()=>{
   if(wasPlaying)startMetronome();
 });
 $('accent').addEventListener('change',drawBeats);
-$('metro-volume').addEventListener('input',()=>{
-  $('metro-volume-value').textContent=$('metro-volume').value+'%';
-  if(metroGain)metroGain.gain.setTargetAtTime(metroLevel(),context.currentTime,.01);
-});
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'&&(metroPlaying||metroStarting)){
     stopMetronome();$('metro-status').textContent='Paused — return and tap Start';
