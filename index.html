@@ -6,7 +6,7 @@
 <title>Cello Drone · Practice companion</title>
 <link rel="icon" type="image/png" sizes="256x256" href="./favicon.png?v=2">
 <link rel="apple-touch-icon" href="./favicon.png?v=2">
-<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./compact.css"><script src="./app.js" defer></script><script src="./notation.js" defer></script><script src="./scale.js" defer></script><script src="./pitch.js" defer></script><script src="./tuner.js" defer></script><script src="./intonation.js" defer></script><script src="./navigation.js" defer></script>
+<link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./compact.css"><script src="./app.js" defer></script><script src="./scale-tuning.js" defer></script><script src="./review.js" defer></script><script src="./notation.js" defer></script><script src="./scale.js" defer></script><script src="./pitch.js" defer></script><script src="./tuner.js" defer></script><script src="./intonation.js" defer></script><script src="./navigation.js" defer></script>
 </head>
 <body>
 <main>
@@ -62,24 +62,32 @@
 <section class="scale-guide" aria-labelledby="scale-heading">
 <div class="metro-heading"><h2 id="scale-heading">Scale guide</h2><span id="scale-status" role="status">Ready</span></div>
 <div class="scale-options">
-<div><label for="scale-type">Scale</label><select id="scale-type"><option value="major">Major</option><option value="natural">Natural minor</option><option value="melodic">Melodic minor</option></select></div>
+<div><label for="scale-type">Scale</label><select id="scale-type"><option value="major">Major</option><option value="natural">Natural minor</option><option value="harmonic">Harmonic minor</option><option value="melodic">Melodic minor</option></select></div>
 <div><label for="scale-key">Root</label><select id="scale-key"></select></div>
 <div><label for="scale-start">Starting octave</label><select id="scale-start"><option value="2">2 · low</option><option value="3" selected>3 · middle</option><option value="4">4 · high</option></select></div>
 <div><label for="scale-octaves">Scale length</label><select id="scale-octaves"><option value="1">One octave</option><option value="2">Two octaves</option></select></div>
 <div><label for="scale-hold">Beats per note</label><select id="scale-hold"><option value="1">1 beat</option><option value="2" selected>2 beats</option><option value="4">4 beats</option></select></div>
 </div>
-<label class="accent-label scale-listen-option"><input id="scale-listen" type="checkbox"> Listen to my playing · headphones</label>
+<details class="scale-extras"><summary>Practice options</summary><div class="extras-grid">
+<div><label for="scale-reference">Pitch reference</label><select id="scale-reference"><option value="equal">Equal temperament</option><option value="pure">Pure intervals · root drone</option></select></div>
+<div><label for="scale-pacing">Follow along</label><select id="scale-pacing"><option value="steady">Steady tempo</option><option value="follow">Wait for me</option></select></div>
+<div><label for="scale-output">Accompaniment</label><select id="scale-output"><option value="headphones">Audible · headphones to listen</option><option value="silent">Silent · no headphones needed</option></select></div>
+</div><p>Wait for me advances after a steady nearby pitch and at least the chosen beats per note. Use Skip note if needed. Silent mutes both drone and clicks; the beat lights continue.</p></details>
+<label class="accent-label scale-listen-option"><input id="scale-listen" type="checkbox"> Listen to my playing</label>
 <div id="scale-listening" class="scale-listening" hidden>
-<label class="accent-label"><input id="scale-headphones" type="checkbox"> Headphones connected</label>
+<label class="accent-label"><input id="scale-headphones" type="checkbox"> Headphones connected (for audible accompaniment)</label>
 <div class="intonation-reading"><strong id="intonation-cents">—</strong><span id="intonation-status">Microphone off</span></div>
 <div id="intonation-meter" class="tuner-meter" role="img" aria-label="No pitch reading"><div class="tuner-center" aria-hidden="true"></div><div id="intonation-needle" class="tuner-needle" hidden aria-hidden="true"></div></div>
 <p id="intonation-feedback" role="status">Start a scale to listen.</p>
 </div>
-<div class="scale-actions"><label class="accent-label"><input id="scale-drone" type="checkbox" checked> Play the root drone</label><button type="button" id="scale-play" class="metro-play">Start scale</button></div>
-<p class="metro-hint">Uses the metronome tempo, with one measure of count-in. Play up, then down. Melodic minor raises degrees 6 and 7 going up and uses natural minor going down. Notation shows explicit accidentals without a key signature; pages follow automatically. Enable listening for live intonation feedback (within ±10 cents is in tune). Connect headphones first so the microphone hears your cello, not the drone or metronome. Audio stays on this device, with no recording or upload. Uncertain readings are not graded. There is no session score. At fast tempos, use more beats per note to allow a steady reading.</p>
+<div class="scale-actions"><label class="accent-label"><input id="scale-drone" type="checkbox" checked> Play the root drone</label><button type="button" id="scale-skip" class="metro-play" hidden>Skip note</button><button type="button" id="scale-play" class="metro-play">Start scale</button></div>
+<p class="metro-hint">Uses the metronome tempo, with one measure of count-in. Play up, then down. Melodic minor raises degrees 6 and 7 going up and uses natural minor going down. Harmonic minor raises degree 7 in both directions. Each staff repeats the key signature; accidentals mark altered notes. Each page ends with a barline, resetting local accidentals; pages follow automatically. Enable listening for live intonation feedback (within ±10 cents is in tune). For listening with audible accompaniment, connect headphones so the microphone hears your cello. Alternatively choose Silent in Practice options. Audio stays on this device, with no recording or upload. Uncertain readings are not graded. After each run, the review summarizes steady readings per note and leaves unclear or skipped notes unscored. At fast tempos, use more beats per note to allow a steady reading.</p>
 <div class="scale-current"><div><span class="current-label">PLAY</span><strong id="scale-current">—</strong></div><div><span class="current-label">NEXT</span><span id="scale-next">C3</span></div><span id="scale-beat">Ready for your count-in</span></div>
 <div id="scale-notes" class="scale-notes" aria-label="Scale notation"></div>
 <div class="score-navigation"><button id="score-prev" type="button" aria-label="Previous notation page">←</button><span id="score-page"></span><button id="score-next" type="button" aria-label="Next notation page">→</button></div>
+<details id="practice-report" class="practice-report" hidden><summary id="report-heading">Scale review</summary>
+<p id="report-summary"></p><div class="report-table" role="region" aria-label="Per-note practice report" tabindex="0"><table><thead><tr><th scope="col">Note</th><th scope="col">Tendency</th><th scope="col">Steady readings</th><th scope="col">Acquired after</th></tr></thead><tbody id="report-rows"></tbody></table></div>
+<p class="report-note">Acquired after includes microphone and pitch-detection delay; it is not a rhythm grade. Percentages cover steady readings only, not the whole performance. Unscored does not mean incorrect. Report stays in this tab until replaced or reloaded.</p></details>
 <p id="scale-error" class="error" role="alert"></p>
 </section>
 <section class="practice-note"><span class="note-mark" aria-hidden="true">♮</span><p>Choose the root of your scale, press play, and let the note anchor each phrase. The same root works for major and minor scales.</p></section>
