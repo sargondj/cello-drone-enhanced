@@ -24,13 +24,13 @@ const tick=()=>new Promise(setImmediate);
 function flush(){const pending=[...timeouts];timeouts.clear();for(const [,v] of pending)v.f();}
 (async()=>{
  for(let key=0;key<12;key++){
-   for(let oct=2;oct<=4;oct++)for(let len=1;len<=2;len++)for(const type of ['major','natural','melodic']){
+   for(let oct=2;oct<=4;oct++)for(let len=1;len<=2;len++)for(const type of ['major','natural','harmonic','melodic']){
      const notes=run('ScaleGuide.makeScale('+key+','+oct+','+len+','+JSON.stringify(type)+')');
      assert.equal(notes.length,len*14+1);
      assert.equal(notes[0].midi,notes.at(-1).midi);
      assert.equal(notes[len*7].midi-notes[0].midi,len*12);
      assert.ok(notes.every(n=>!n.name.includes('undefined')));
-     const expected={major:[0,2,4,5,7,9,11],natural:[0,2,3,5,7,8,10],melodic:[0,2,3,5,7,9,11]};
+     const expected={major:[0,2,4,5,7,9,11],natural:[0,2,3,5,7,8,10],harmonic:[0,2,3,5,7,8,11],melodic:[0,2,3,5,7,9,11]};
      for(let i=0;i<=len*7;i++)assert.equal(notes[i].midi-notes[0].midi,12*Math.floor(i/7)+expected[type][i%7]);
      for(let i=len*7+1;i<notes.length;i++){
        const degree=notes.length-1-i,pattern=expected[type==='melodic'?'natural':type];
@@ -43,11 +43,34 @@ function flush(){const pending=[...timeouts];timeouts.clear();for(const [,v] of 
      run('ScaleNotation.mark(8)');assert.match(get('score-page').textContent,/^2 \/ /);
      assert.equal(get('scale-notes').children[0].children.filter(n=>n['aria-current']==='step').length,1);
      run('ScaleNotation.mark(-1)');assert.equal(get('score-prev').disabled,true);
+     const count=(type==='major'?[0,-5,2,-3,4,-1,6,1,-4,3,-2,5]:[-3,4,-1,-6,1,-4,3,-2,5,0,-5,2])[key];
+     const signature=Array(7).fill(0),order=count>0?[3,0,4,1,5,2,6]:[6,2,5,1,4,0,3];
+     order.slice(0,Math.abs(count)).forEach(letter=>signature[letter]=Math.sign(count));
+     for(let pageStart=0;pageStart<notes.length;pageStart+=7){
+       run('ScaleNotation.mark('+pageStart+')');
+       const svg=get('scale-notes').children[0];
+       assert.equal(svg.children.filter(n=>n['data-key-letter']!==undefined).length,Math.abs(count));
+       const local=new Map();
+       for(const group of svg.children.filter(n=>n['data-note-index']!==undefined)){
+         const note=notes[Number(group['data-note-index'])],key=note.letterIndex+':'+note.writtenOctave;
+         const signs=group.children.filter(n=>n['data-local-accidental']!==undefined);
+         assert.ok(signs.length<=1);
+         const prior=local.has(key)?local.get(key):signature[note.letterIndex];
+         const effective=signs.length?Number(signs[0]['data-local-accidental']):prior;
+         assert.equal(effective,note.accidental,'Key signature and local accidental reconstruct the played pitch');
+         if(type==='major'||type==='natural')assert.equal(signs.length,0,'No redundant accidentals');
+         if(signs.length)assert.notEqual(effective,prior,'Only changed accidentals are shown');
+         local.set(key,effective);
+       }
+     }
 
    }
  }
  assert.equal(run('ScaleGuide.makeScale(6,3,1)[6].name'),'E♯4');
  assert.equal(run('ScaleGuide.makeScale(1,3,1)[3].name'),'G♭3');
+ assert.equal(run("ScaleGuide.makeScale(1,3,1,'harmonic')[6].name"),'B♯3');
+ assert.equal(run("ScaleGuide.makeScale(6,3,1,'harmonic')[6].name"),'E♯4');
+ assert.equal(run("ScaleGuide.makeScale(0,3,1,'harmonic')[8].name"),'B3');
  get('scale-type').value='major';get('scale-key').value='0';get('scale-start').value='3';get('scale-octaves').value='1';
  get('scale-play').click();await tick();await tick();
  assert.equal(run('playing&&metroPlaying&&ScaleGuide.active()'),true);
@@ -86,5 +109,5 @@ function flush(){const pending=[...timeouts];timeouts.clear();for(const [,v] of 
  get('scale-play').click();await tick();await tick();run('context.currentTime+=5;scheduleBeats()');
  assert.equal(run('ScaleGuide.active()||metroPlaying'),false);
  assert.match(get('scale-status').textContent,/Timing interrupted/);
- console.log('PASS: 216 scale configurations; ascending/descending interval patterns; notation paging/highlighting; key spelling; count-in; synchronized note advancement; full last-note duration; 1/2 octave completion; existing-drone preservation; cancellation; lost-timing stop.');
+ console.log('PASS: 288 scale configurations; ascending/descending interval patterns; notation paging/highlighting; key spelling; count-in; synchronized note advancement; full last-note duration; 1/2 octave completion; existing-drone preservation; cancellation; lost-timing stop.');
 })().catch(e=>{console.error(e);process.exit(1)});
