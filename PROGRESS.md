@@ -52,7 +52,17 @@ This cumulative release contains Stages 1–4. It includes the compact tabbed in
 
 The prior compact Stage 3 deployment was live from commit `bc415c1d46a65b8d944c04e89b25e5a8ff5936e8` at https://sargondj.github.io/cello-drone-enhanced/ before this Stage 4 update.
 
-Stage 4 is being published only to `sargondj/cello-drone-enhanced`. Final GitHub Pages and live functional checks will be added after publication succeeds.
+Stage 4 was published only to `sargondj/cello-drone-enhanced` on 2026-09-23. GitHub Pages completed successfully for application/test commit `d92db3a12e6fd4a308cdab63f538415f298f819c`.
+
+Live deployment validation completed:
+
+- The public URL loaded the Practice, Tuner, and Scales tabs with no browser console errors or warnings.
+- `style.css`, `compact.css`, `app.js`, `notation.js`, `scale.js`, `pitch.js`, `tuner.js`, `intonation.js`, and `navigation.js` loaded from the enhanced Pages subpath in the required order.
+- Two-octave melodic minor rendered five notation pages and exposed the Stage 4 listening controls.
+- Guide-only mode started without entering a microphone permission state.
+- Listening without headphone confirmation was blocked with the expected instruction.
+- Confirmed listening entered the real browser permission-pending state and exposed Cancel.
+- Changing to Practice canceled the pending request, restored Microphone off, and returned the scale button to Start scale.
 
 The protected original `sargondj/cello-drone` repository has not been modified or deployed.
 
