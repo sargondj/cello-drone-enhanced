@@ -1,3 +1,5 @@
+> Historical stage notes. COMPLETION-NOTES.md, PROGRESS.md and HANDOFF.md describe the current completed package and supersede earlier scope/stopping instructions.
+
 # Stage 4 — live scale intonation
 
 Use Scales → Listen to my playing, connect headphones, confirm Headphones
